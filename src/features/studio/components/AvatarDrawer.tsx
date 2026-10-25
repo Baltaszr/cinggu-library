@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { expressionName, expressionPackage } from '@/features/avatar/expressionPackages'
 import { AvatarSheetImporter } from './AvatarSheetImporter'
 import { Copy, Pencil, Plus, Trash2, Upload } from 'lucide-react'
@@ -43,12 +43,24 @@ export function AvatarPage({ controller }: { controller: StudioController }) {
     t,
   } = controller
 
-  const [packageFilter, setPackageFilter] = useState('*')
-  const packages = [...new Set(controller.expressions.map(expressionPackage))]
-  const selectedPackage = packages.includes(packageFilter) ? packageFilter : '*'
-  const available = controller.expressions.filter(
-    preset => selectedPackage === '*' || expressionPackage(preset) === selectedPackage
+  const activePreset = controller.expressions[controller.activeExpression ?? -1]
+  const [packageFilter, setPackageFilter] = useState(
+    activePreset ? expressionPackage(activePreset) : 'Cinggu'
   )
+  const packages = [...new Set(controller.expressions.map(expressionPackage))]
+  const selectedPackage = packages.includes(packageFilter)
+    ? packageFilter
+    : packages.includes('Cinggu')
+      ? 'Cinggu'
+      : (packages[0] ?? '')
+  const available = controller.expressions.filter(
+    preset => expressionPackage(preset) === selectedPackage
+  )
+  // Follow expressions saved in the editor; package options come from the same live library.
+  const activePackage = activePreset ? expressionPackage(activePreset) : null
+  useEffect(() => {
+    if (activePackage) setPackageFilter(activePackage)
+  }, [activePackage, controller.activeAvatarId])
 
   return (
     <div className="panel-stack avatar-page">
@@ -63,11 +75,21 @@ export function AvatarPage({ controller }: { controller: StudioController }) {
         <Button onClick={controller.saveLibraryPalette}>{t('Enregistrer la palette')}</Button>
       </div>
       {/* Reuse the active avatar's expressions, including uploaded eye artwork. */}
-      <div className="cinggu-head-actions">
+      <div className="cinggu-library-filters cinggu-home-expressions">
         <label>
           {t('Paquet d’expressions')}
-          <select value={selectedPackage} onChange={event => setPackageFilter(event.target.value)}>
-            <option value="*">{t('Tous les paquets')}</option>
+          <select
+            value={selectedPackage}
+            onChange={event => {
+              const name = event.target.value
+              setPackageFilter(name)
+              const index = controller.expressions.findIndex(
+                preset => expressionPackage(preset) === name
+              )
+              if (index >= 0)
+                controller.transitionToExpression(controller.expressions[index], index)
+            }}
+          >
             {packages.map(name => (
               <option key={name} value={name}>
                 {name}
@@ -104,12 +126,7 @@ export function AvatarPage({ controller }: { controller: StudioController }) {
         </label>
         <Button
           disabled={!available.length}
-          onClick={() =>
-            controller.playExpressionPackage(
-              available,
-              selectedPackage === '*' ? t('Tous les paquets') : selectedPackage
-            )
-          }
+          onClick={() => controller.playExpressionPackage(available, selectedPackage)}
         >
           {t('Lire le paquet')}
         </Button>

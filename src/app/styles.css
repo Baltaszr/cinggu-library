@@ -4351,3 +4351,26 @@ p {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Home expression controls share the editor fields and align the playback action. */
+.cinggu-home-expressions {
+  padding: 16px;
+  margin: 0;
+  border: 1px solid #d7d9ca;
+  border-radius: 16px;
+  background: #fffef8;
+  align-items: end;
+}
+.cinggu-home-expressions label {
+  min-width: min(180px, 100%);
+}
+.cinggu-home-expressions select {
+  min-height: 44px;
+}
+.cinggu-home-expressions button {
+  min-height: 44px;
+}
+.cinggu-home-expressions select:focus-visible {
+  outline: 2px solid #315ecb;
+  outline-offset: 2px;
+}
