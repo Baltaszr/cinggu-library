@@ -1,4 +1,5 @@
 export const chinese: Record<string, string> = {
+  'Lire le paquet': '播放表情包',
   Soutenir: '支持',
   'Soutenir le créateur': '支持创作者',
   'Votre soutien aide à améliorer Cinggu et à maintenir le code.':

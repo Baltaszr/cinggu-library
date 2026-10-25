@@ -77,3 +77,7 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md). Keep changes small, preserve existing c
 ## Licence and acknowledgement
 
 AGPL-3.0-only; see [LICENSE](LICENSE). Preserve upstream notices and provide corresponding source for modified network-served versions. Thank you to Stéphane Montlouis-Calixte and the Bible Strong Avatar Lab contributors for the foundation. [CREDITS.md](CREDITS.md) and [CINGGU-CHANGES.md](CINGGU-CHANGES.md) describe the distinction between upstream work and Cinggu additions.
+
+### Preview expressions from Avatars
+
+On the Avatars page, choose an expression package and an expression to apply it to the selected mascot. Uploaded expressions appear in their package after saving them in Expressions. **Play package** cycles through that package slowly (3.5-second holds), using the normal pause/resume/stop controls. This temporary preview does not overwrite saved animations. The selected avatar card also reflects the current expression.

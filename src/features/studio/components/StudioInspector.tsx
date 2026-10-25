@@ -2115,7 +2115,10 @@ export function StudioInspector({ controller }: { controller: StudioController }
               <div className="state-playback-controls">
                 <StatePlayer
                   name={activeSequenceLabel}
-                  choices={sequences.map(sequence => ({ id: sequence.id, name: sequence.name }))}
+                  choices={(sequences.some(sequence => sequence.id === activeSequence.id)
+                    ? sequences
+                    : [activeSequence, ...sequences]
+                  ).map(sequence => ({ id: sequence.id, name: sequence.name }))}
                   selectedId={activeSequence.id}
                   onSelect={id => {
                     const sequence = sequences.find(item => item.id === id)

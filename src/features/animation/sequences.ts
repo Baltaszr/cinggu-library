@@ -306,3 +306,27 @@ export const getSequenceSpring = (
     damping: (17 + speed * 1.7) * (transition === 'smooth' ? 1.18 : 1),
   }
 }
+
+// Preview references the existing presets, so imported artwork and later edits stay intact.
+export const createExpressionPackagePreview = (
+  presets: Expression[],
+  name: string
+): AvatarSequence => ({
+  ...createSequence(presets[0]?.id),
+  id: 'cinggu-package-preview',
+  name,
+  steps: presets.map((preset, index) => ({
+    id: `package-step-${index}`,
+    expressionId: preset.id,
+    holdMs: 3500,
+    transitionMs: 700,
+    transition: 'smooth',
+  })),
+  blink: {
+    enabled: false,
+    initialDelayMs: 2600,
+    minIntervalMs: 3400,
+    maxIntervalMs: 6200,
+    durationMs: 280,
+  },
+})

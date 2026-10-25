@@ -1,5 +1,7 @@
 // Indonesian UI copy. Technical identifiers and user-created names remain unchanged.
 export const indonesian: Record<string, string> = {
+  'Lire le paquet': 'Putar paket',
+  'Play package': 'Putar paket',
   'Choose animations, then use the same JSON definition with React or JavaScript.':
     'Pilih animasi, lalu gunakan definisi JSON yang sama dengan React atau JavaScript.',
   'The ZIP contains the exported JSON and a ready-to-run Vite React TypeScript project. Start it with npm install, then npm run dev.':

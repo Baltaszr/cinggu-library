@@ -101,6 +101,7 @@ const english: Record<string, string> = {
   'Impossible de charger la référence.': 'Could not load the reference.',
   'Code source et licence': 'Source & licence',
   'Animation prête': 'Animation ready',
+  'Lire le paquet': 'Play package',
   'Lire l’animation': 'Play animation',
 
   'Créer ma propre tête': 'Create my own head',

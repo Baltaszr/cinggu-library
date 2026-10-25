@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { expressionName, expressionPackage } from '@/features/avatar/expressionPackages'
 import { AvatarSheetImporter } from './AvatarSheetImporter'
 import { Copy, Pencil, Plus, Trash2, Upload } from 'lucide-react'
 import { motion } from 'motion/react'
@@ -41,6 +43,13 @@ export function AvatarPage({ controller }: { controller: StudioController }) {
     t,
   } = controller
 
+  const [packageFilter, setPackageFilter] = useState('*')
+  const packages = [...new Set(controller.expressions.map(expressionPackage))]
+  const selectedPackage = packages.includes(packageFilter) ? packageFilter : '*'
+  const available = controller.expressions.filter(
+    preset => selectedPackage === '*' || expressionPackage(preset) === selectedPackage
+  )
+
   return (
     <div className="panel-stack avatar-page">
       <AvatarSheetImporter onAdd={controller.addImportedShapes} />
@@ -52,6 +61,58 @@ export function AvatarPage({ controller }: { controller: StudioController }) {
           {t('Couleurs d’origine')}
         </Button>
         <Button onClick={controller.saveLibraryPalette}>{t('Enregistrer la palette')}</Button>
+      </div>
+      {/* Reuse the active avatar's expressions, including uploaded eye artwork. */}
+      <div className="cinggu-head-actions">
+        <label>
+          {t('Paquet d’expressions')}
+          <select value={selectedPackage} onChange={event => setPackageFilter(event.target.value)}>
+            <option value="*">{t('Tous les paquets')}</option>
+            {packages.map(name => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          {t('Expression')}
+          <select
+            value={
+              available.some(
+                preset =>
+                  preset.id === controller.expressions[controller.activeExpression ?? -1]?.id
+              )
+                ? controller.expressions[controller.activeExpression!].id
+                : ''
+            }
+            onChange={event => {
+              const index = controller.expressions.findIndex(
+                preset => preset.id === event.target.value
+              )
+              if (index >= 0)
+                controller.transitionToExpression(controller.expressions[index], index)
+            }}
+          >
+            <option value="">{t('Choisir une expression')}</option>
+            {available.map(preset => (
+              <option key={preset.id} value={preset.id}>
+                {expressionName(preset)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <Button
+          disabled={!available.length}
+          onClick={() =>
+            controller.playExpressionPackage(
+              available,
+              selectedPackage === '*' ? t('Tous les paquets') : selectedPackage
+            )
+          }
+        >
+          {t('Lire le paquet')}
+        </Button>
       </div>
       <section className="avatar-shelf" aria-label={t('Choisir un avatar')}>
         <div className="avatar-shelf-heading">
@@ -108,7 +169,9 @@ export function AvatarPage({ controller }: { controller: StudioController }) {
                       }}
                     >
                       <ExpressionPreview
-                        expression={defaultExpression}
+                        expression={
+                          activeAvatarId === avatar.id ? controller.expression : defaultExpression
+                        }
                         surface={avatar.body.primary}
                         bodyNodes={avatar.body.nodes}
                         colors={avatar.colors}

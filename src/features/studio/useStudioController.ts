@@ -1,3 +1,4 @@
+import { createExpressionPackagePreview } from '@/features/animation/sequences'
 import { requireAccountSave } from '@/features/account/session'
 import bundledStudio from './defaultStudioDocument.json'
 import { animate, useMotionValue, useMotionValueEvent, useReducedMotion } from 'motion/react'
@@ -1244,7 +1245,12 @@ export function useStudioController() {
   const toggleStatePlayback = () => {
     if (!activeState || !activeSequenceRef.current) return
     if (statePlaying) pauseState()
-    else launchSequence(activeSequenceRef.current, playbackStatus === 'paused')
+    else
+      launchSequence(
+        activeSequenceRef.current,
+        playbackStatus === 'paused',
+        activeState !== 'cinggu-package-preview'
+      )
   }
 
   const suspendStateForEditor = () => {
@@ -1457,6 +1463,12 @@ export function useStudioController() {
     if (!sequenceEditing) restoreStateAfterEditor()
   }
 
+  // Package playback is a temporary preview; it never replaces authored animations.
+  const playExpressionPackage = (presets: Expression[], name: string) => {
+    const preview = createExpressionPackagePreview(presets, name)
+    launchSequence(preview, false, false)
+  }
+
   const openSequenceEditor = (sequence?: AvatarSequence) => {
     suspendStateForEditor()
     setEditing(null)
@@ -1606,7 +1618,9 @@ export function useStudioController() {
       ? runtimeCopyFeedback.status
       : 'idle'
   const activeAvatarEyes = activeAvatar.eyes ?? defaultAvatarEyes
-  const activeSequence = sequences.find(sequence => sequence.id === activeState) ?? null
+  const activeSequence =
+    sequences.find(sequence => sequence.id === activeState) ??
+    (activeState === 'cinggu-package-preview' ? activeSequenceRef.current : null)
   const activeSequenceLabel = activeSequence
     ? activeSequence.builtIn
       ? t(activeSequence.name)
@@ -2086,6 +2100,7 @@ export function useStudioController() {
     highlight,
     language,
     launchSequence,
+    playExpressionPackage,
     linked,
     mode,
     openExpressionEditor,
