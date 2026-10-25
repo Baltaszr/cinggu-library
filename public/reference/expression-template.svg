@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1280" viewBox="0 0 1280 1280"><rect width="1280" height="1280" fill="black"/><g stroke="#202020" stroke-width="1"><path d="M320 0v1280M640 0v1280M960 0v1280M0 320h1280M0 640h1280M0 960h1280"/></g><!-- Draw one white eye-pair centered in each 320 x 320 cell. Leave unused cells black. Use Grid 4 x 4 on import. --></svg>
